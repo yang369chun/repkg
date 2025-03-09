@@ -28,7 +28,7 @@ namespace RePKG.Application.Texture
                 throw new EnumNotValidException<TexFormat>(texFormat);
 
             var mipmapCount = reader.ReadInt32();
-
+            
             if (mipmapCount > Constants.MaximumMipmapCount)
                 throw new UnsafeTexException(
                     $"Mipmap count exceeds limit: {mipmapCount}/{Constants.MaximumMipmapCount}");
@@ -108,6 +108,7 @@ namespace RePKG.Application.Texture
 
                 case TexImageContainerVersion.Version2:
                 case TexImageContainerVersion.Version3:
+                case TexImageContainerVersion.Version4:
                     return ReadMipmapV2And3;
 
                 default:

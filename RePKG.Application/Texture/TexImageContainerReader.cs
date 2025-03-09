@@ -37,11 +37,12 @@ namespace RePKG.Application.Texture
                 case "TEXB0001":
                 case "TEXB0002":
                     break;
-
                 case "TEXB0003":
                     container.ImageFormat = (FreeImageFormat) reader.ReadInt32();
                     break;
-
+                case "TEXB0004":
+                    container.ImageFormat = (FreeImageFormat)reader.ReadInt64();
+                    break;
                 default:
                     throw new UnknownMagicException(nameof(TexImageContainerReader), container.Magic);
             }

@@ -4,6 +4,7 @@ namespace RePKG.Core.Texture
     {
         Version1 = 1,
         Version2 = 2,
-        Version3 = 3
+        Version3 = 3,
+        Version4 = 4
     }
 }

@@ -90,10 +90,10 @@ namespace RePKG.Application.Texture
             }
             var conditionJson = reader.ReadNString();
             
-            var param4 = reader.ReadInt32();
-            if (param4 != 1)
+            var param3 = reader.ReadInt32();
+            if (param3 != 1)
             {
-                throw new UnsafeTexException($"ReadMipmapV4 unknow param3 :{param4}");
+                throw new UnsafeTexException($"ReadMipmapV4 unknow param3 :{param3}");
             }
             return new TexMipmap
             {

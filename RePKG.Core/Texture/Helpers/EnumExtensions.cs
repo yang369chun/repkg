@@ -23,7 +23,7 @@ namespace RePKG.Core.Texture
         {
             var formatId = (int) format;
 
-            return formatId >= -1 && formatId <= 34;
+            return formatId >= -1 && formatId <= 35;
         }
     }
 }

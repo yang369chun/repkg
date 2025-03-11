@@ -186,5 +186,10 @@
         /// RAW camera image (*.*)
         /// </summary>
         FIF_RAW = 34,
+
+        /// <summary>
+        /// RAW camera MP4 (*.mp4)
+        /// </summary>
+        FIF_MP4 = 35,
     }
 }

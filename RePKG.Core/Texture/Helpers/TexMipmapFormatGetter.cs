@@ -144,7 +144,8 @@ namespace RePKG.Core.Texture
                 
                 case FreeImageFormat.FIF_RAW:
                     return MipmapFormat.ImageRAW;
-                
+                case FreeImageFormat.FIF_MP4:
+                    return MipmapFormat.VideoMp4;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(freeImageFormat), freeImageFormat, null);
             }

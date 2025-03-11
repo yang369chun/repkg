@@ -49,10 +49,6 @@ namespace RePKG.Application.Texture
                         {
                             format = FreeImageFormat.FIF_MP4;
                         }
-                        else
-                        {
-                            throw new UnsafeTexException($"TEXB0004 unkonw param isVideoMp4: {isVideoMp4},format: {nameof(format)}");
-                        }
                     }
                     container.ImageFormat = format;
                     break;

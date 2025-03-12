@@ -37,16 +37,33 @@ namespace RePKG.Application.Texture
                 case "TEXB0001":
                 case "TEXB0002":
                     break;
-
                 case "TEXB0003":
                     container.ImageFormat = (FreeImageFormat) reader.ReadInt32();
                     break;
-
+                case "TEXB0004":
+                    var format = (FreeImageFormat)reader.ReadInt32();
+                    var isVideoMp4 = reader.ReadInt32() == 1;
+                    if (format == FreeImageFormat.FIF_UNKNOWN)
+                    {
+                        if (isVideoMp4)
+                        {
+                            format = FreeImageFormat.FIF_MP4;
+                        }
+                    }
+                    container.ImageFormat = format;
+                    break;
                 default:
                     throw new UnknownMagicException(nameof(TexImageContainerReader), container.Magic);
             }
 
-            container.ImageContainerVersion = (TexImageContainerVersion) Convert.ToInt32(container.Magic.Substring(4));
+            int version = Convert.ToInt32(container.Magic.Substring(4));
+            container.ImageContainerVersion = (TexImageContainerVersion)version;
+
+            if(container.ImageContainerVersion == TexImageContainerVersion.Version4
+                && container.ImageFormat != FreeImageFormat.FIF_MP4)
+            {
+                container.ImageContainerVersion = TexImageContainerVersion.Version3;
+            }
             
             if (!container.ImageFormat.IsValid())
                 throw new EnumNotValidException<FreeImageFormat>(container.ImageFormat);

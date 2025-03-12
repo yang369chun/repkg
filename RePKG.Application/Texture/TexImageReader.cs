@@ -28,7 +28,7 @@ namespace RePKG.Application.Texture
                 throw new EnumNotValidException<TexFormat>(texFormat);
 
             var mipmapCount = reader.ReadInt32();
-
+            
             if (mipmapCount > Constants.MaximumMipmapCount)
                 throw new UnsafeTexException(
                     $"Mipmap count exceeds limit: {mipmapCount}/{Constants.MaximumMipmapCount}");
@@ -72,7 +72,38 @@ namespace RePKG.Application.Texture
                 Bytes = ReadBytes(reader)
             };
         }
-
+        private TexMipmap ReadMipmapV4(BinaryReader reader)
+        {
+            /**FIXME
+             * The role of the following param* parameters cannot be confirmed, 
+             * it may be a parameter used in the built-in display of the wallpaper editor and does not need to be processed
+             */
+            var param1 = reader.ReadInt32();
+            if(param1 != 1)
+            {
+                throw new UnsafeTexException($"ReadMipmapV4 unknow param1 :{param1}");
+            }
+            var param2= reader.ReadInt32();
+            if (param2 != 2)
+            {
+                throw new UnsafeTexException($"ReadMipmapV4 unknow param2 :{param2}");
+            }
+            var conditionJson = reader.ReadNString();
+            
+            var param3 = reader.ReadInt32();
+            if (param3 != 1)
+            {
+                throw new UnsafeTexException($"ReadMipmapV4 unknow param3 :{param3}");
+            }
+            return new TexMipmap
+            {
+                Width = reader.ReadInt32(),
+                Height = reader.ReadInt32(),
+                IsLZ4Compressed = reader.ReadInt32() == 1,
+                DecompressedBytesCount = reader.ReadInt32(),
+                Bytes = ReadBytes(reader)
+            };
+        }
         private byte[] ReadBytes(BinaryReader reader)
         {
             var byteCount = reader.ReadInt32();
@@ -109,7 +140,9 @@ namespace RePKG.Application.Texture
                 case TexImageContainerVersion.Version2:
                 case TexImageContainerVersion.Version3:
                     return ReadMipmapV2And3;
-
+                    
+                case TexImageContainerVersion.Version4:
+                    return ReadMipmapV4;
                 default:
                     throw new InvalidOperationException(
                         $"Tex image container version: {containerVersion} is not supported!");

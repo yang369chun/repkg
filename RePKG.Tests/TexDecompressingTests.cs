@@ -41,10 +41,13 @@ namespace RePKG.Tests
         [TestCase("V3_DXT5", true, null)]
         [TestCase("V3_RGBA8888_GIF_TEXS0003", true, TexFlags.IsGif)]
         [TestCase("V3_VIDEOTEXTURE_MP4", true, TexFlags.IsVideoTexture)]
+        [TestCase("V4_PNG_FILE", true, null)]
+        [TestCase("V4_DXT5", true, null)]
+        [TestCase("V4_MP4", true, TexFlags.IsVideoTexture)]
         public void TestTexDecompressing(
             string name,
             bool validateBytes = true,
-            TexFlags? validateFlags = TexFlags.None)
+            TexFlags? validateFlags = null)
         {
             var texture = _reader.ReadFrom(LoadTestFile(name));
 

@@ -48,6 +48,7 @@ namespace RePKG.Tests
         [TestCase("V3_DXT5")]
         [TestCase("V3_RGBA8888_GIF_TEXS0003")]
         [TestCase("V3_VIDEOTEXTURE_MP4")]
+        // TODO: V4_ ones are failing but we don't really need writing functionality
         public void TestWriteAndRead(string name)
         {
             // Load file

@@ -1,7 +1,7 @@
 name: Build RePKG Single-File
 
 on:
-  workflow_dispatch:   # 手动触发
+  workflow_dispatch:   # 可以手动触发
   push:                # 或 push 时触发
 
 jobs:
@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rid: [linux-arm64, win-x64]   # 编译 Linux ARM64 和 Windows x64
+        rid: [linux-arm64, win-x64]   # 编译两个平台
     steps:
       # 1. 拉取源码
       - name: Checkout code
@@ -19,7 +19,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'   # 可根据 RePKG 需要调整版本
+          dotnet-version: '8.0.x'
 
       # 3. 还原依赖
       - name: Restore dependencies
@@ -30,7 +30,7 @@ jobs:
         run: dotnet build RePKG.sln -c Release
 
       # 5. 发布单文件可执行程序
-      - name: Publish single-file
+      - name: Publish single-file executable
         run: |
           dotnet publish RePKG.Application/RePKG.Application.csproj \
             -c Release \

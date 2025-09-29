@@ -1,4 +1,5 @@
 using System;
+using RePKG; // 根据你源码里命名空间修改
 
 namespace RePKG.Application
 {
@@ -6,8 +7,17 @@ namespace RePKG.Application
     {
         public static void Main(string[] args)
         {
-            // 调用 RePKG 核心逻辑
-            RePKG.MainApp.Run(args);
+            try
+            {
+                // 如果有具体入口方法，例如 RePKG.MainApp.Run(args)
+                // 你需要根据源码调整
+                MainApp.Run(args);  
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("运行出错: " + ex.Message);
+                Console.WriteLine(ex.StackTrace);
+            }
         }
     }
 }

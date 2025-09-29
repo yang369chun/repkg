@@ -1,32 +1,46 @@
-name: Build RePKG
+name: Build RePKG Single-File
 
 on:
-  workflow_dispatch:   # 可以手动点运行
-  push:                # 你提交代码时也会触发
+  workflow_dispatch:   # 手动触发
+  push:                # 或 push 时触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        rid: [linux-arm64, linux-x64, win-x64]   # 一次编译三种平台
+        rid: [linux-arm64, win-x64]   # 编译 Linux ARM64 和 Windows x64
     steps:
-      - uses: actions/checkout@v3
+      # 1. 拉取源码
+      - name: Checkout code
+        uses: actions/checkout@v3
 
+      # 2. 安装 .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0.x'   # 最新 LTS 版本
+          dotnet-version: '8.0.x'   # 可根据 RePKG 需要调整版本
 
+      # 3. 还原依赖
       - name: Restore dependencies
         run: dotnet restore RePKG.sln
 
+      # 4. 构建项目
       - name: Build
         run: dotnet build RePKG.sln -c Release
 
-      - name: Publish self-contained binary
-        run: dotnet publish RePKG.Application/RePKG.Application.csproj -c Release -r ${{ matrix.rid }} --self-contained true -o out/${{ matrix.rid }}
+      # 5. 发布单文件可执行程序
+      - name: Publish single-file
+        run: |
+          dotnet publish RePKG.Application/RePKG.Application.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            /p:PublishSingleFile=true \
+            /p:IncludeAllContentForSelfExtract=true \
+            -o out/${{ matrix.rid }}
 
+      # 6. 上传 artifact
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

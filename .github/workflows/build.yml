@@ -1,0 +1,34 @@
+name: Build RePKG
+
+on:
+  workflow_dispatch:   # 可以手动点运行
+  push:                # 你提交代码时也会触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rid: [linux-arm64, linux-x64, win-x64]   # 一次编译三种平台
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'   # 最新 LTS 版本
+
+      - name: Restore dependencies
+        run: dotnet restore RePKG.sln
+
+      - name: Build
+        run: dotnet build RePKG.sln -c Release
+
+      - name: Publish self-contained binary
+        run: dotnet publish RePKG.Application/RePKG.Application.csproj -c Release -r ${{ matrix.rid }} --self-contained true -o out/${{ matrix.rid }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: repkg-${{ matrix.rid }}
+          path: out/${{ matrix.rid }}

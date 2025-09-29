@@ -1,0 +1,48 @@
+name: Build RePKG Single-File Executable
+
+on:
+  workflow_dispatch:   # 手动触发
+  push:                # push 时触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rid: [linux-arm64, win-x64]   # 构建 Linux ARM64 和 Windows x64
+    steps:
+      # 1. 拉取源码
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. 安装 .NET SDK
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      # 3. 还原依赖（仅 Application 项目）
+      - name: Restore dependencies
+        run: dotnet restore RePKG.Application/RePKG.Application.csproj
+
+      # 4. 构建项目（仅 Application 项目）
+      - name: Build Application
+        run: dotnet build RePKG.Application/RePKG.Application.csproj -c Release
+
+      # 5. 发布单文件可执行程序
+      - name: Publish single-file executable
+        run: |
+          dotnet publish RePKG.Application/RePKG.Application.csproj \
+            -c Release \
+            -r ${{ matrix.rid }} \
+            --self-contained true \
+            /p:PublishSingleFile=true \
+            /p:IncludeAllContentForSelfExtract=true \
+            -o out/${{ matrix.rid }}
+
+      # 6. 上传构建产物到 Actions Artifact
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: repkg-${{ matrix.rid }}
+          path: out/${{ matrix.rid }}
